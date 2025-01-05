@@ -18,6 +18,8 @@ router.get('/confirm-email', confirmEmail )
 router.post('/reset-password', sendPasswordResetEmail)
 router.post('/confirm-reset-password', resetPassword)
 
+router.get('/questions',authenticateToken, questions)
+
 router.post('/upload-profile-picture', authenticateToken, uploadProfilePicture);
 router.get('/profile-picture', authenticateToken, getProfilePicture);
 

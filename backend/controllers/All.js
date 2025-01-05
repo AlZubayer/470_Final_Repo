@@ -3,6 +3,7 @@ import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 import nodemailer from 'nodemailer';
 import ProfilePicture from "../models/profilePicture.js";
+import Question from "../models/questionModel.js";
 import Report from '../models/Report.js';
 
 
@@ -332,3 +333,13 @@ export const createReport = async (req, res) => {
     }
 };
 
+export const questions = async (req, res) => {
+    console.log("Received request to get questions");
+    try {
+        const questions = await Question.find();
+        res.status(200).json(questions);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+};
