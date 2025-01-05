@@ -64,6 +64,50 @@ const Admin = () => {
         setReports(response.data);
     };
 
+    const generatePDF = () => {
+        const doc = new jsPDF();
+
+        // Add title
+        doc.setFontSize(16);
+        doc.text('Reports Summary', 14, 15);
+
+        // Define the table columns and rows
+        const tableColumn = ["Email", "Type", "Details", "Time", "Status"];
+        const tableRows = reports.map(report => [
+            report.userEmail,
+            report.type,
+            report.details,
+            new Date(report.timestamp).toLocaleString(),
+            report.status
+        ]);
+
+        // Generate the table
+        (doc as any).autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: 25,
+            styles: { fontSize: 8 },
+            columnStyles: {
+                0: { cellWidth: 40 },
+                1: { cellWidth: 30 },
+                2: { cellWidth: 50 },
+                3: { cellWidth: 35 },
+                4: { cellWidth: 25 }
+            }
+        });
+
+        // Save the PDF
+        doc.save('reports.pdf');
+    };
+    useEffect(() => {
+        if (activeTab === 'questions') {
+            fetchQuestions();
+        } else if (activeTab === 'users') {
+            fetchUsers();
+        } else if (activeTab === 'reports') {
+            fetchReports();
+        }
+    }, [activeTab]);
    
     const handleUpdateStatus = async (reportId: string, newStatus: 'resolved' | 'rejected') => {
         const token = localStorage.getItem("token");
