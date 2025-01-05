@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 import { connectDB } from './config/db.js';
 import router from './routes/route.js';
 import { createServer } from 'http';
+import adminRouter from './routes/adminRoute.js';
 
 
 dotenv.config();

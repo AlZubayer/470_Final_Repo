@@ -4,6 +4,7 @@ import Signup from './pages/Signup'
 import Login from './pages/Login'
 import ResetPassword from './pages/ResetPassword'
 import Chat from './pages/Chat'
+import Admin from './pages/Admin'
 import axios from 'axios'
 
 
@@ -121,6 +122,7 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </div>
     </Router>
