@@ -15,19 +15,26 @@ const Admin = () => {
     const [suspensionStatus, setSuspensionStatus] = useState<SuspensionStatus | null>(null);
 
     const [activeTab, setActiveTab] = useState('questions');
-    
-    const handleActivateUser = async () => {
+    const [questions, setQuestions] = useState<Question[]>([]);
+    const [users, setUsers] = useState<User[]>([]);
+    const [formData, setFormData] = useState({
+        question: '',
+        option1: '',
+        option2: '',
+        option3: '',
+        option4: '',
+        correct: '',
+        resource: ''
+    });
+    const [editingId, setEditingId] = useState<string | null>(null);
+    const [reports, setReports] = useState<Report[]>([]);
+
+    const fetchReports = async () => {
         const token = localStorage.getItem("token");
-        try {
-            await axios.post(`http://localhost:5000/admin/activate`, {
-                email: searchEmail,
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            checkSuspensionStatus();
-        } catch (error) {
-            console.error('Error activating user:', error);
-        }
+        const response = await axios.get('http://localhost:5000/reports', {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        setReports(response.data);
     };
 
     
@@ -83,8 +90,6 @@ const Admin = () => {
             </div>
 
             
-            
-
                 {/* Suspension Tab */}
                 {activeTab === 'suspension' && (
                     <>
@@ -138,7 +143,9 @@ const Admin = () => {
                     </>
                 )}
             </div>
+        </div>
     );
 };
 
 export default Admin;
+
