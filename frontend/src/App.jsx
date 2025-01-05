@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom'
 import Signup from './pages/Signup'
 import Login from './pages/Login'
+import CompanionText from './pages/CompanionText'
 import ResetPassword from './pages/ResetPassword'
 import Chat from './pages/Chat'
 import Admin from './pages/Admin'
@@ -120,6 +121,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/become-a-companion" element={<CompanionText />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/admin" element={<Admin />} />
