@@ -3,6 +3,10 @@ import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom'
 import Signup from './pages/Signup'
 import Login from './pages/Login'
 import ResetPassword from './pages/ResetPassword'
+
+
+
+
 import Forum from './pages/Forum'
 
 import axios from 'axios'
