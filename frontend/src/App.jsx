@@ -11,6 +11,11 @@ import Report from './pages/Report'
 import Chat from './pages/Chat'
 import ResetPassword from './pages/ResetPassword'
 
+
+
+
+
+import Report from './pages/Report'
 import axios from 'axios'
 
 
@@ -134,6 +139,9 @@ const App = () => {
           <Route path="/report" element={<Report />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+
+
+          <Route path="/report" element={<Report />} />
         </Routes>
       </div>
     </Router>
