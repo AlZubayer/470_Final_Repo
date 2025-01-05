@@ -4,6 +4,11 @@ import Signup from './pages/Signup'
 import Login from './pages/Login'
 import ResetPassword from './pages/ResetPassword'
 
+
+
+
+
+import Report from './pages/Report'
 import axios from 'axios'
 
 
@@ -120,6 +125,9 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+
+
+          <Route path="/report" element={<Report />} />
         </Routes>
       </div>
     </Router>
