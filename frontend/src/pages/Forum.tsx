@@ -1,12 +1,22 @@
 import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import {
+    Home,
+    SmilePlus,
+    Heart,
+    Brain,
+    Cloud,
+    Sun,
+    ChevronRight,
+    Send,
     Link as LinkIcon,
+    Image,
+    ChevronDown,
+    Users,
+    Search,
     Pencil,
     Trash2,
     ThumbsUp,
-    ChevronRight,
-    ChevronDown,
     MessageCircle
 } from 'lucide-react';
 
@@ -39,6 +49,7 @@ interface Post {
 const Forum = () => {
     const [selectedCategory, setSelectedCategory] = useState<string>('all');
     const [postCategory, setPostCategory] = useState<string>('General');
+
     const categories = ['Welcome Center', 'Mindful Moments', 'Wellness Hub', 'Support Circle', 'General'];
 
     const [editingPost, setEditingPost] = useState<string | null>(null);
@@ -235,25 +246,200 @@ const Forum = () => {
 
     return (
         <div className="min-h-screen bg-[#C5C5C5]/10 p-6 flex gap-8">
-            <div className="flex-1 space-y-6">
-                <div className="bg-white p-6 rounded-lg shadow-md border border-[#C5C5C5]">
-                    <div className="flex gap-4 items-start">
-                        <textarea
-                            value={postText}
-                            onChange={(e) => setPostText(e.target.value)}
-                            className="w-full p-4 rounded-lg border border-[#C5C5C5] focus:border-[#4D6A6D]"
-                            placeholder="Share your thoughts..."
-                        />
-                        <button
-                            onClick={handlePost}
-                            disabled={isLoading}
-                            className="bg-[#4D6A6D] text-white px-6 py-2 rounded-lg"
-                        >
-                            {isLoading ? 'Posting...' : 'Post'}
-                        </button>
+            {/* Left Sidebar */}
+            <div className="w-60 space-y-2 sticky top-6">
+                <div className="bg-[#4D6A6D] text-white p-2 rounded-lg shadow-sm">
+                    <h2 className="text-lg font-semibold">SoulSpeak Community</h2>
+                </div>
+
+                <div className="bg-[#4D6A6D] rounded-lg shadow-sm">
+                    <div className="p-2 border-b border-[#829191]">
+                        <div className="flex items-center gap-2 text-white">
+                            <Home size={16} />
+                            <span className="text-sm font-medium">Community Spaces</span>
+                        </div>
+                    </div>
+
+                    <div className="p-2 space-y-1">
+                        {['Welcome Center', 'Mindful Moments', 'Wellness Hub', 'Support Circle', 'About SoulSpeak'].map((item) => (
+                            <button
+                                key={item}
+                                className="w-full bg-white hover:bg-[#C5C5C5] text-[#4C5B61] p-2 rounded-md text-left transition-colors text-sm"
+                            >
+                                {item}
+                            </button>
+                        ))}
                     </div>
                 </div>
 
+                <div className="bg-[#4D6A6D] rounded-lg shadow-sm overflow-hidden">
+                    <div className="p-2 text-white text-center border-b border-[#829191]">
+                        <Sun className="inline-block mb-1" size={20} />
+                        <p className="text-sm font-medium">Your Wellness Journey</p>
+                    </div>
+
+                    <div className="text-white text-sm">
+                        {[
+                            {
+                                label: 'Daily Reflections',
+                                icon: Brain,
+                                color: 'bg-purple-600',
+                                hoverColor: 'hover:bg-purple-500',
+                                subItems: [
+                                    { name: 'Morning Journal', url: 'https://www.youtube.com/watch?v=MXXs9JC_ItQ' },
+                                    { name: 'Evening Check-in', url: 'https://www.youtube.com/watch?v=ncy-I0Ag710' }
+                                ]
+                            },
+                            {
+                                label: 'Guided Practices',
+                                icon: Heart,
+                                color: 'bg-pink-600',
+                                hoverColor: 'hover:bg-pink-500',
+                                subItems: [
+                                    { name: 'Meditation Guide', url: 'https://www.youtube.com/watch?v=vj0JDwQLof4' },
+                                    { name: 'Breathing Tutorial', url: 'https://www.youtube.com/watch?v=LiUnFJ8P4gM' }
+                                ]
+                            },
+                            {
+                                label: 'Mood Tracker',
+                                icon: SmilePlus,
+                                color: 'bg-orange-600',
+                                hoverColor: 'hover:bg-orange-500',
+                                subItems: [
+                                    { name: 'Track Your Mood', url: 'https://youtube.com/watch?v=mood-tracking' },
+                                    { name: 'Emotional Wellness', url: 'https://youtube.com/watch?v=emotional-health' }
+                                ]
+                            },
+                            {
+                                label: 'Progress Path',
+                                icon: Cloud,
+                                color: 'bg-blue-600',
+                                hoverColor: 'hover:bg-blue-500',
+                                subItems: [
+                                    { name: 'Goal Setting Guide', url: 'https://youtube.com/watch?v=goal-setting' },
+                                    { name: 'Success Habits', url: 'https://youtube.com/watch?v=daily-habits' }
+                                ]
+                            }
+                        ].map((item) => (
+                            <div key={item.label}>
+                                <button
+                                    onClick={() => setOpenDropdown(openDropdown === item.label ? null : item.label)}
+                                    className={`w-full p-2 text-left border-b border-teal-600 hover:bg-teal-600 flex justify-between items-center transition-colors ${item.color}`}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <item.icon size={16} />
+                                        {item.label}
+                                    </div>
+                                    <ChevronDown size={14} className={`transform transition-transform ${openDropdown === item.label ? 'rotate-180' : ''}`} />
+                                </button>
+                                {openDropdown === item.label && (
+                                    <div className={`${item.color}`}>
+                                        {item.subItems.map((subItem) => (
+                                            <a
+                                                key={subItem.name}
+                                                href={subItem.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className={`w-full p-2 pl-8 text-left ${item.hoverColor} text-sm transition-colors flex items-center gap-2 cursor-pointer`}
+                                            >
+                                                {subItem.name}
+                                                <LinkIcon size={12} className="inline" />
+                                            </a>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="flex-1 space-y-6">
+                {/* Post Creation Box */}
+                <div className="bg-white p-6 rounded-lg shadow-md border border-[#C5C5C5]">
+                    <div className="flex gap-4 items-start">
+                        <div className="w-12 h-12 bg-[#4D6A6D] rounded-full flex items-center justify-center text-white">
+                            <Users size={20} />
+                        </div>
+                        <div className="flex-1">
+                            <textarea
+                                value={postText}
+                                onChange={(e) => setPostText(e.target.value)}
+                                className="w-full p-4 rounded-lg border border-[#C5C5C5] focus:border-[#4D6A6D] focus:ring-1 focus:ring-[#4D6A6D] resize-none"
+                                placeholder="Share your thoughts with the community..."
+                                rows={3}
+                            />
+                            {imagePreview && (
+                                <div className="mt-2 relative">
+                                    <img
+                                        src={imagePreview}
+                                        alt="Preview"
+                                        className="max-h-48 rounded-lg"
+                                    />
+                                    <button
+                                        onClick={() => {
+                                            setSelectedImage(null);
+                                            setImagePreview(null);
+                                        }}
+                                        className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600"
+                                    >
+                                        ×
+                                    </button>
+                                </div>
+                            )}
+                            <div className="flex justify-between mt-4">
+                                <div className="flex gap-4">
+                                    <input
+                                        type="file"
+                                        ref={fileInputRef}
+                                        onChange={handleImageUpload}
+                                        accept="image/*"
+                                        className="hidden"
+                                    />
+                                    <div className="mt-4">
+                                        <select
+                                            value={postCategory}
+                                            onChange={(e) => setPostCategory(e.target.value)}
+                                            className="w-full p-2 rounded-lg border border-gray-200 focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+                                        >
+                                            {categories.map(category => (
+                                                <option key={category} value={category}>
+                                                    {category}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <button
+                                        onClick={triggerFileInput}
+                                        className="flex items-center gap-2 text-[#4D6A6D] hover:text-[#829191]"
+                                    >
+                                        <Image size={18} />
+                                        Photo
+                                    </button>
+                                    {selectedImage && (
+                                        <span className="text-sm text-teal-600">
+                                            {selectedImage.name}
+                                        </span>
+                                    )}
+                                    {/* <button className="flex items-center gap-2 text-teal-700 hover:text-teal-800">
+                                        <LinkIcon size={18} />
+                                        Link
+                                    </button> */}
+                                </div>
+                                <button
+                                    onClick={handlePost}
+                                    disabled={isLoading}
+                                    className="bg-[#4D6A6D] text-white px-6 py-2 rounded-lg hover:bg-[#829191] transition-colors disabled:opacity-50"
+                                >
+                                    {isLoading ? 'Posting...' : 'Post'}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Posts Feed */}
                 <div className="space-y-4">
                     {posts
                         .filter(post => selectedCategory === 'all' || post.category === selectedCategory)
@@ -426,6 +612,7 @@ const Forum = () => {
                                     </div>
                                 )}
 
+                                {/* Comments section */}
                                 <div className="bg-[#C5C5C5]/10 p-3 rounded mt-4">
                                     {post.comments.map((comment, index) => {
                                         console.log('Comment user ID:', comment.user);
@@ -511,7 +698,6 @@ const Forum = () => {
                     <ChevronDown size={14} />
                 </button>
             </div>
-            
         </div>
     );
 };
