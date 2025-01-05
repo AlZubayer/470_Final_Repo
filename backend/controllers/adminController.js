@@ -4,7 +4,6 @@ import Report from "../models/Report.js";
 
 
 
-
 export async function suspend(request, response) {
     try {
         const admin = await User.findById(request.user.id);
@@ -80,3 +79,17 @@ export const updateReportStatus = async (req, res) => {
         res.status(500).json({ message: "Error updating report status", error: error.message });
     }
 }
+
+export async function get_all_users (request, response){
+    try {
+        const admin = await User.findById(request.user.id);
+        if (!admin) {
+            return response.status(401).json({ message: "Admin not found." });
+        }
+        const users = await User.find();
+        return response.status(200).json(users);
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        return response.status(500).json({ message: "Internal server error." });
+    }
+};

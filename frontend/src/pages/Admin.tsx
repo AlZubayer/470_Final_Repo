@@ -3,6 +3,16 @@ import axios from 'axios';
 import { jsPDF } from 'jspdf';
 import 'jspdf-autotable';
 
+interface Question {
+    _id: string;
+    question: string;
+    option1: string;
+    option2: string;
+    option3: string;
+    option4: string;
+    correct: string;
+    resource: string;
+}
 
 interface Report {
     _id: string;
@@ -11,6 +21,14 @@ interface Report {
     type: 'review' | 'profile-report' | 'chat-report';
     details: string;
     status: 'pending' | 'resolved' | 'rejected';
+}
+
+
+interface User {
+    _id: string;
+    username: string;
+    email: string;
+    isCompanion: boolean;
 }
 
 interface SuspensionStatus {
@@ -45,6 +63,8 @@ const Admin = () => {
         });
         setReports(response.data);
     };
+
+   
     const handleUpdateStatus = async (reportId: string, newStatus: 'resolved' | 'rejected') => {
         const token = localStorage.getItem("token");
         await axios.patch(
