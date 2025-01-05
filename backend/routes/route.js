@@ -6,10 +6,16 @@ const router = express.Router()
 
 router.post("/signup", signup)
 router.post("/login", login)
+router.get("/profile", authenticateToken, profile)
+router.put("/profile", authenticateToken, updateProfile)
 
 router.post('/verify-email', authenticateToken, verifyEmail);
 router.get('/confirm-email', confirmEmail )
 router.post('/reset-password', sendPasswordResetEmail)
 router.post('/confirm-reset-password', resetPassword)
+
+router.post('/upload-profile-picture', authenticateToken, uploadProfilePicture);
+router.get('/profile-picture', authenticateToken, getProfilePicture);
+
 
 export default router
