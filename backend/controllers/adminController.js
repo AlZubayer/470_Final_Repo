@@ -55,6 +55,27 @@ export async function add_companion_test_question(request, response) {
         return response.status(500).json({ message: "Internal server error." });
     }
 }
+export async function delete_question(request, response) {
+    console.log("Received request to delete a question");
+    try {
+        const { id } = request.params;  
+        const user = await User.findById(request.user.id);
+        if (!user) {
+            return response.status(401).json({ message: "User not found." });
+        }
+        if (!(user.email === "admin@gmail.com")) {
+            return response.status(403).json({ message: "You are not authorized to delete questions." });
+        }
+        const deletedQuestion = await Question.findByIdAndDelete(id);
+        if (!deletedQuestion) {
+            return response.status(404).json({ message: "Question not found." });
+        }
+        return response.status(200).json({ message: "Question deleted successfully." });
+    } catch (error) {
+        console.error("Error deleting question:", error);  // Updated error message
+        return response.status(500).json({ message: "Internal server error." });
+    }
+}
 
 export async function update_question(request, response){
     try {
