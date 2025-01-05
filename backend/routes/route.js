@@ -9,6 +9,10 @@ router.post("/login", login)
 router.get("/profile", authenticateToken, profile)
 router.put("/profile", authenticateToken, updateProfile)
 
+
+router.get('/reports', authenticateToken, getReports);
+router.post('/reports', authenticateToken, createReport);
+
 router.post('/verify-email', authenticateToken, verifyEmail);
 router.get('/confirm-email', confirmEmail )
 router.post('/reset-password', sendPasswordResetEmail)
