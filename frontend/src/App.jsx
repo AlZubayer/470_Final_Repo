@@ -2,10 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom'
 import Signup from './pages/Signup'
 import Login from './pages/Login'
+import Profile from './pages/Profile'
 import CompanionText from './pages/CompanionText'
-import ResetPassword from './pages/ResetPassword'
-import Chat from './pages/Chat'
+import TrainingProgram from './pages/TrainingProgram'
 import Admin from './pages/Admin'
+import Forum from './pages/Forum'
+import Report from './pages/Report'
+import Chat from './pages/Chat'
+import ResetPassword from './pages/ResetPassword'
+
 import axios from 'axios'
 
 
@@ -121,10 +126,14 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/become-a-companion" element={<CompanionText />} />
+          <Route path="/training-program" element={<TrainingProgram />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/forum" element={<Forum />} />
+          <Route path="/report" element={<Report />} />
           <Route path="/chat" element={<Chat />} />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/admin" element={<Admin />} />
         </Routes>
       </div>
     </Router>
