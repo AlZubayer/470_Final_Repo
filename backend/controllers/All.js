@@ -1,11 +1,11 @@
 import bcrypt from "bcrypt";
 import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
-import nodemailer from 'nodemailer';
-import ProfilePicture from "../models/profilePicture.js";
-import Question from "../models/questionModel.js";
-import Report from '../models/Report.js';
 import Post from '../models/Post.js';
+import Report from '../models/Report.js';
+import Question from "../models/questionModel.js";
+import ProfilePicture from "../models/profilePicture.js";
+import nodemailer from 'nodemailer';
 import multer from 'multer';
 import path from 'path';
 
@@ -29,89 +29,6 @@ const upload = multer({ storage,
         }
         cb(null, true);
     } });
-
-
-
-export const createPost = async (req, res) => {
-    console.log("Received request to create post");
-    try {
-        // Handle file upload
-        const uploadResult = await new Promise((resolve, reject) => {
-            upload.single('image')(req, res, (err) => {
-                if (err) reject(err);
-                resolve(req.file);
-            });
-        });
-
-        // Validate required fields
-        if (!req.body.content || !req.body.category) {
-            return res.status(400).json({
-                message: 'Content and category are required'
-            });
-        }
-
-        // Create and save post
-        const newPost = new Post({
-            content: req.body.content,
-            category: req.body.category,
-            author: req.user.id,
-            imageUrl: uploadResult ? `/uploads/${uploadResult.filename}` : null
-        });
-
-        await newPost.save();
-        console.log('Post created:', newPost);
-        return res.status(201).json(newPost);
-
-    } catch (error) {
-        console.error('Post creation error:', error);
-        return res.status(error.status || 500).json({
-            message: error.message || 'Error creating post'
-        });
-    }
-};
-
-export const upvotePost = async (req, res) => {
-    try {
-        const post = await Post.findById(req.params.id);
-        if (!post) {
-            return res.status(404).json({ message: 'Post not found' });
-        }
-
-        const upvoteIndex = post.upvotes.indexOf(req.user.id);
-        if (upvoteIndex === -1) {
-            post.upvotes.push(req.user.id);
-        } else {
-            post.upvotes.splice(upvoteIndex, 1);
-        }
-        await post.save();
-        res.json(post);
-    } catch (error) {
-        res.status(500).json({ message: 'Error updating upvote' });
-    }
-};
-
-export const addComment = async (req, res) => {
-    try {
-        const post = await Post.findById(req.params.id);
-        if (!post) {
-            return res.status(404).json({ message: 'Post not found' });
-        }
-
-        const comment = {
-            user: req.user.id,
-            content: req.body.content
-        };
-        post.comments.push(comment);
-        await post.save();
-
-        const populatedPost = await Post.findById(post._id)
-            .populate('comments.user', 'username avatar _id');
-
-        res.json(populatedPost);
-    } catch (error) {
-        res.status(500).json({ message: 'Error adding comment' });
-    }
-};
 
 
 export async function verifyEmail(req, res) {
@@ -319,6 +236,7 @@ export async function login(request, response) {
         return response.status(500).json({ message: "Internal server error." });
     }
 }
+
 export const profile = async (req, res) => {
     console.log("Received request to get profile");
     try {
@@ -332,6 +250,8 @@ export const profile = async (req, res) => {
         res.status(500).json({ message: "Internal server error." });
     }
 };
+
+
 export const updateProfile = async (req, res) => {
     console.log("Received request to update profile");
     try {
@@ -359,6 +279,7 @@ export const updateProfile = async (req, res) => {
         }
         var v = true
         if (user.email != email) v = false;
+
         const user_updated = await User.findByIdAndUpdate(userId, {
             name,
             username,
@@ -371,6 +292,8 @@ export const updateProfile = async (req, res) => {
             preferences,
             verified: v
         }, { new: true });
+
+
         await user_updated.save();
         console.log("User updated:", user_updated);
         res.status(200).json({ user: user_updated });
@@ -379,6 +302,7 @@ export const updateProfile = async (req, res) => {
         res.status(500).json({ message: "Internal server error." });
     }
 };
+
 export const uploadProfilePicture = async (req, res) => {
     try {
         const uploadResult = await new Promise((resolve, reject) => {
@@ -387,9 +311,11 @@ export const uploadProfilePicture = async (req, res) => {
                 resolve(req.file);
             });
         });
+
         if (!uploadResult) {
             return res.status(400).json({ message: 'No image file provided' });
         }
+
         const imageUrl = `/uploads/${uploadResult.filename}`;
         
         // Update user's profile picture
@@ -398,10 +324,12 @@ export const uploadProfilePicture = async (req, res) => {
             { imageUrl: imageUrl },
             { upsert: true, new: true }
         );
+
         res.status(200).json({ 
             message: 'Profile picture updated successfully',
             imageUrl: imageUrl 
         });
+
     } catch (error) {
         console.error('Profile picture upload error:', error);
         res.status(500).json({ message: 'Error uploading profile picture' });
@@ -415,6 +343,7 @@ export const getProfilePicture = async (req, res) => {
             console.log('No profile picture found for user:', req.user.id);
             return res.status(200).json({ imageUrl: null });
         }
+
         res.status(200).json({ imageUrl: profilePic.imageUrl });
         
     } catch (error) {
@@ -423,59 +352,44 @@ export const getProfilePicture = async (req, res) => {
     }
 };
 
-export const createReport = async (req, res) => {
-    console.log("Received request to create a report");
+
+export const createPost = async (req, res) => {
+    console.log("Received request to create post");
     try {
-        const { userEmail, type, details } = req.body;
-        const newReport = new Report({
-            userEmail,
-            type,
-            details
+        // Handle file upload
+        const uploadResult = await new Promise((resolve, reject) => {
+            upload.single('image')(req, res, (err) => {
+                if (err) reject(err);
+                resolve(req.file);
+            });
         });
-        console.log("New report created:", newReport);
-        await newReport.save();
-        res.status(201).json(newReport);
+
+        // Validate required fields
+        if (!req.body.content || !req.body.category) {
+            return res.status(400).json({
+                message: 'Content and category are required'
+            });
+        }
+
+        // Create and save post
+        const newPost = new Post({
+            content: req.body.content,
+            category: req.body.category,
+            author: req.user.id,
+            imageUrl: uploadResult ? `/uploads/${uploadResult.filename}` : null
+        });
+
+        await newPost.save();
+        console.log('Post created:', newPost);
+        return res.status(201).json(newPost);
+
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.error('Post creation error:', error);
+        return res.status(error.status || 500).json({
+            message: error.message || 'Error creating post'
+        });
     }
 };
-
-export const questions = async (req, res) => {
-    console.log("Received request to get questions");
-    try {
-        const questions = await Question.find();
-        res.status(200).json(questions);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Something went wrong" });
-    }
-};
-
-export const companion = async (req, res) => {
-    console.log("Received request to update companion status");
-    try {
-        const id = req.user.id;
-        await User.findByIdAndUpdate(id, {
-            isCompanion: true
-        })
-        return res.status(200).json({ message: "Companion status updated successfully" });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Something went wrong" });
-    }
-};
-
-export const companions = async (req, res) => {
-    console.log("Received request to get companions");
-    try {
-        const companions = await User.find({ isCompanion: true });
-        res.status(200).json(companions);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Something went wrong" });
-    }
-};
-
 export const updatePost = async (req, res) => {
     try {
         const uploadResult = await new Promise((resolve, reject) => {
@@ -545,6 +459,49 @@ export const deletePost = async (req, res) => {
     }
 };
 
+export const upvotePost = async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        const upvoteIndex = post.upvotes.indexOf(req.user.id);
+        if (upvoteIndex === -1) {
+            post.upvotes.push(req.user.id);
+        } else {
+            post.upvotes.splice(upvoteIndex, 1);
+        }
+        await post.save();
+        res.json(post);
+    } catch (error) {
+        res.status(500).json({ message: 'Error updating upvote' });
+    }
+};
+
+export const addComment = async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.id);
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+
+        const comment = {
+            user: req.user.id,
+            content: req.body.content
+        };
+        post.comments.push(comment);
+        await post.save();
+
+        const populatedPost = await Post.findById(post._id)
+            .populate('comments.user', 'username avatar _id');
+
+        res.json(populatedPost);
+    } catch (error) {
+        res.status(500).json({ message: 'Error adding comment' });
+    }
+};
+
 export const getComments = async (req, res) => {
     try {
         const post = await Post.findById(req.params.id)
@@ -589,6 +546,7 @@ export const deleteComment = async (req, res) => {
     }
 };
 
+
 export const getReports = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
@@ -607,5 +565,56 @@ export const getReports = async (req, res) => {
     }
 };
 
+export const createReport = async (req, res) => {
+    console.log("Received request to create a report");
+    try {
+        const { userEmail, type, details } = req.body;
+        const newReport = new Report({
+            userEmail,
+            type,
+            details
+        });
+        console.log("New report created:", newReport);
+        await newReport.save();
+        res.status(201).json(newReport);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
 
 
+export const companion = async (req, res) => {
+    console.log("Received request to update companion status");
+    try {
+        const id = req.user.id;
+        await User.findByIdAndUpdate(id, {
+            isCompanion: true
+        })
+        return res.status(200).json({ message: "Companion status updated successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+};
+
+export const companions = async (req, res) => {
+    console.log("Received request to get companions");
+    try {
+        const companions = await User.find({ isCompanion: true });
+        res.status(200).json(companions);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+};
+
+export const questions = async (req, res) => {
+    console.log("Received request to get questions");
+    try {
+        const questions = await Question.find();
+        res.status(200).json(questions);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Something went wrong" });
+    }
+};

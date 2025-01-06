@@ -3,12 +3,12 @@ import cors from 'cors';
 import dotenv from "dotenv"
 import { connectDB } from './config/db.js';
 import router from './routes/route.js';
+import adminRouter from './routes/adminRoute.js';
 import chatRouter from './routes/chatRoute.js';
 import http from 'http';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import chatSocket from './socket/chatSocket.js';
-
 
 dotenv.config();
 
@@ -30,6 +30,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("",router)
+app.use("/admin",adminRouter)
 app.use("/chat", chatRouter);
 
 app.use('/uploads', express.static('uploads'));
